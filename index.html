@@ -11,7 +11,6 @@
       .icon {
         width: 40px;
         margin: 0.5rem;
-        background-color: black;
         transition: all 0.2s ease-in-out;
       }
       @font-face {
@@ -32,7 +31,7 @@
       }
       body {
         font-size: 62.5%;
-        background-color: black;
+        background-color: hsl(235, 100%, 4%);
         color: #ffffff;
         font-size: 1.6rem;
         text-align: center;
@@ -60,6 +59,54 @@
       }
       h1 {
         font-family: headfont;
+        background: linear-gradient(to right, #0059ff, #00ff0d);
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        margin-top: 15px;
+        margin-bottom: 10px;
+      }
+      h3 {
+        margin-top: 0.2rem;
+      }
+      button {
+        font-family: difficultyfont;
+        font-size: 1.9rem;
+        margin: 5px;
+        border-radius: 5px;
+      }
+      #modeButtons {
+        display: flex;
+        flex-direction: column;
+      }
+
+      dialog {
+        opacity: 0;
+        transform: scale(0.8);
+        transition:
+          opacity 0.2s ease-out,
+          transform 0.2s ease-out,
+          overlay 0.2s ease-out allow-discrete,
+          display 0.2s ease-out allow-discrete;
+        background-color: hsl(235, 100%, 4%);
+        color: white;
+      }
+
+      dialog:open {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      @starting-style {
+        dialog:open {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+      }
+      #cancelBtn {
+        background-color: red;
+        color: white;
+        border: 2px solid white;
       }
     </style>
   </head>
@@ -68,7 +115,27 @@
     <header>
       <h1>Globe Mind</h1>
     </header>
-    <main></main>
+    <main>
+      <button id="startBtn">Start</button>
+
+      <dialog id="modes">
+        <h3>Choose Your Mode</h3>
+        <div id="modeButtons">
+          <button>Guess the Country by Flag</button>
+          <button>Guess the Country by Flag</button>
+          <button>Guess the Country by Flag</button>
+          <button>Guess the Country by Flag</button>
+          <button>Guess the Country by Flag</button>
+          <button>Guess the Country by Flag</button>
+        </div>
+        <button
+          id="cancelBtn"
+          onclick="document.querySelector('#modes').close()"
+        >
+          Cancel
+        </button>
+      </dialog>
+    </main>
     <hr />
     <footer id="footerHr">
       <center>
