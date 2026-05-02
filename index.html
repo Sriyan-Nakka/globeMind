@@ -68,12 +68,14 @@
       }
       h3 {
         margin-top: 0.2rem;
+        margin-bottom: 10px;
       }
       button {
         font-family: difficultyfont;
         font-size: 1.9rem;
         margin: 5px;
         border-radius: 5px;
+        padding-bottom: 5px;
       }
       #modeButtons {
         display: flex;
@@ -90,6 +92,17 @@
           display 0.2s ease-out allow-discrete;
         background-color: hsl(235, 100%, 4%);
         color: white;
+        max-width: 90%;
+        line-height: 1.25;
+      }
+      dialog#howToPlay {
+        padding: 5px;
+        padding-top: 7px;
+      }
+      dialog p {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
       }
 
       dialog:open {
@@ -103,10 +116,63 @@
           transform: scale(0.8);
         }
       }
+
+      .btn {
+        position: relative;
+        overflow: hidden;
+        z-index: 0;
+      }
+
+      .btn::before,
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        transition: opacity 0.25s ease;
+      }
+
+      .btn::before {
+        background: var(--c1);
+        opacity: 1;
+      }
+
+      .btn::after {
+        background: linear-gradient(to right, var(--c1), var(--c2));
+        opacity: 0;
+      }
+
+      .btn:hover::after {
+        opacity: 1;
+      }
+
       #cancelBtn {
-        background-color: red;
+        --c1: red;
+        --c2: rgb(255, 50, 50);
         color: white;
         border: 2px solid white;
+        margin-top: 10px;
+      }
+
+      #tutorialBtn {
+        --c1: green;
+        --c2: hsl(120, 91%, 35%);
+        color: white;
+        border: 2px solid white;
+      }
+
+      #startBtn {
+        --c1: hsl(0, 0%, 65%);
+        --c2: hsl(0, 0%, 85%);
+        color: black;
+        border: 2px solid white;
+      }
+
+      #modeButtons button {
+        transition: transform 0.1s ease-in-out;
+      }
+      #modeButtons button:hover {
+        transform: translateX(9px);
       }
     </style>
   </head>
@@ -116,19 +182,77 @@
       <h1>Globe Mind</h1>
     </header>
     <main>
-      <button id="startBtn">Start</button>
+      <div>
+        <button
+          id="tutorialBtn"
+          class="btn"
+          onclick="document.querySelector(`#howToPlay`).showModal()"
+        >
+          How to Play
+        </button>
+
+        <button
+          class="btn"
+          id="startBtn"
+          onclick="document.querySelector('#modes').showModal()"
+        >
+          Start
+        </button>
+      </div>
+
+      <dialog id="howToPlay">
+        <h3><u>How to Play</u></h3>
+        <p>Welcome to Globe Mind, the game that tests your geography skills!</p>
+        <p>
+          When you press the <span style="color: green"> Start </span>button,
+          you will be presented with a series of modes which you have to select.
+          Modes are the different ways you can challenge your geography skills.
+        </p>
+        <p>
+          For example, You chose
+          <span style="color: gray">"Guess the Country by Flag"</span> mode. In
+          this mode, you will be shown a Flag and you have to guess the country
+          of the flag in the selected time limit. If you guess it right, you get
+          to move on to the next country. This same pattern continues depending
+          on which mode you have chosen.
+        </p>
+        <hr />
+        <p>
+          <b>Game Types:</b> <br />
+          There are different methods of playing this game called 'Game Types'.
+          The first type is called
+          <b>'Normal'</b>, where you have to guess <b>10</b> answers in the
+          selected time. The second type is <b>Endless</b>, where you have to
+          keep guessing answers depending on your mode until you fail to guess
+          the correct answer.
+        </p>
+        <hr />
+        <p>
+          You can guess how many answers as you want in the selected time limit
+          in any Game Type. But, if you fail to guess the answer correctly in
+          that time, you lose immediately. Hope you like it! :)
+        </p>
+        <button
+          class="btn"
+          id="cancelBtn"
+          onclick="document.querySelector('#howToPlay').close()"
+        >
+          Exit
+        </button>
+      </dialog>
 
       <dialog id="modes">
         <h3>Choose Your Mode</h3>
         <div id="modeButtons">
-          <button>Guess the Country by Flag</button>
-          <button>Guess the Country by Flag</button>
-          <button>Guess the Country by Flag</button>
-          <button>Guess the Country by Flag</button>
-          <button>Guess the Country by Flag</button>
-          <button>Guess the Country by Flag</button>
+          <button class="btn">Guess the Country by Flag</button>
+          <button class="btn">Guess the Country by Flag</button>
+          <button class="btn">Guess the Country by Flag</button>
+          <button class="btn">Guess the Country by Flag</button>
+          <button class="btn">Guess the Country by Flag</button>
+          <button class="btn">Guess the Country by Flag</button>
         </div>
         <button
+          class="btn"
           id="cancelBtn"
           onclick="document.querySelector('#modes').close()"
         >
@@ -139,7 +263,11 @@
     <hr />
     <footer id="footerHr">
       <center>
-        <a href="https://github.com/Sriyan-Nakka" target="_blank">
+        <a
+          href="https://github.com/Sriyan-Nakka"
+          target="_blank"
+          title="My GitHub"
+        >
           <svg
             class="icon github"
             xmlns="http://www.w3.org/2000/svg"
@@ -149,6 +277,73 @@
               fill="white"
               d="M12 1A10.89 10.89 0 0 0 1 11.77A10.79 10.79 0 0 0 8.52 22c.55.1.75-.23.75-.52v-1.83c-3.06.65-3.71-1.44-3.71-1.44a2.86 2.86 0 0 0-1.22-1.58c-1-.66.08-.65.08-.65a2.31 2.31 0 0 1 1.68 1.11a2.37 2.37 0 0 0 3.2.89a2.33 2.33 0 0 1 .7-1.44c-2.44-.27-5-1.19-5-5.32a4.15 4.15 0 0 1 1.11-2.91a3.78 3.78 0 0 1 .11-2.84s.93-.29 3 1.1a10.7 10.7 0 0 1 5.5 0c2.1-1.39 3-1.1 3-1.1a3.78 3.78 0 0 1 .11 2.84A4.15 4.15 0 0 1 19 11.2c0 4.14-2.58 5.05-5 5.32a2.5 2.5 0 0 1 .75 2v2.95c0 .35.2.63.75.52A10.8 10.8 0 0 0 23 11.77A10.89 10.89 0 0 0 12 1"
             />
+          </svg>
+        </a>
+        <a
+          href="https://sriyansites.web.app"
+          target="_blank"
+          title="My Website"
+        >
+          <svg
+            class="icon"
+            width="35px"
+            height="35px"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#000000"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <defs>
+                <style>
+                  .cls-1 {
+                    fill: none;
+                    stroke: #ffffff;
+                    stroke-miterlimit: 10;
+                    stroke-width: 1.92px;
+                  }
+                </style>
+              </defs>
+              <g id="roll_brush" data-name="roll brush">
+                <rect
+                  class="cls-1"
+                  x="1.46"
+                  y="1.5"
+                  width="21.1"
+                  height="21.1"
+                ></rect>
+                <polygon
+                  class="cls-1"
+                  points="22.56 7.25 16.28 7.25 14.37 7.25 1.46 7.25 1.46 1.5 22.56 1.5 22.56 7.25"
+                ></polygon>
+                <line
+                  class="cls-1"
+                  x1="4.34"
+                  y1="4.38"
+                  x2="6.25"
+                  y2="4.38"
+                ></line>
+                <line
+                  class="cls-1"
+                  x1="8.17"
+                  y1="4.38"
+                  x2="10.09"
+                  y2="4.38"
+                ></line>
+                <line
+                  class="cls-1"
+                  x1="12.01"
+                  y1="4.38"
+                  x2="13.93"
+                  y2="4.38"
+                ></line>
+              </g>
+            </g>
           </svg>
         </a>
         <br />
