@@ -310,7 +310,7 @@
         </a>
         <br />
         &copy; Copyright, Sai Sriyan Nakka 2026, All Rights Reserved.
-        <br />Version 0.1 <br />
+        <br />Version 1.0 <br />
       </center>
     </footer>
     <script>
@@ -333,13 +333,22 @@
 
       function startGame() {
         document.querySelector("#otherSettings").close();
-        timer = document.querySelector(`input[name="timer"]:checked`).value;
 
+        timer = document.querySelector(`input[name="timer"]:checked`).value;
         gameType = document.querySelector(
           `input[name="gameType"]:checked`,
         ).value;
 
-        window.location.href = `game.html?mode=${mode}&timer=${timer}&gameType=${gameType}`;
+        const settings = {
+          mode,
+          timer,
+          gameType,
+          createdAt: Date.now(),
+        };
+
+        localStorage.setItem("GM_rules", JSON.stringify(settings));
+
+        window.location.href = "game.html";
       }
     </script>
   </body>
