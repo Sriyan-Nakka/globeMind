@@ -1,0 +1,132 @@
+.icon {
+  width: 40px;
+  margin: 0.5rem;
+  transition: all 0.2s ease-in-out;
+}
+@font-face {
+  font-family: "headfont";
+  src: url("fonts/ChangaOne.woff2") format("woff2");
+}
+@font-face {
+  font-family: "bodyfont";
+  src: url("fonts/ChelseaMarket-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "difficultyfont";
+  src: url("fonts/VinaSans-Regular.woff2") format("woff2");
+}
+.icon:hover {
+  cursor: pointer;
+  transform: scale(1.25);
+}
+body {
+  font-size: 62.5%;
+  background-color: hsl(235, 100%, 4%);
+  color: #ffffff;
+  font-size: 1.6rem;
+  text-align: center;
+  font-family: bodyfont;
+}
+footer {
+  font-size: 1.25rem;
+  padding: 0.5rem;
+}
+footer a {
+  text-decoration: none;
+}
+a,
+button {
+  cursor: pointer;
+}
+hr {
+  height: 3px;
+  border: none;
+  background-color: white;
+}
+#footerHr {
+  margin-bottom: 5px;
+  margin-top: 15px;
+}
+h3 {
+  margin-top: 0.2rem;
+  margin-bottom: 10px;
+  font-family: headfont;
+  font-size: 2.1rem;
+  font-weight: normal;
+}
+button {
+  font-family: difficultyfont;
+  font-size: 1.9rem;
+  margin: 5px;
+  border-radius: 5px;
+  padding-bottom: 5px;
+}
+dialog {
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out,
+    overlay 0.2s ease-out allow-discrete,
+    display 0.2s ease-out allow-discrete;
+  background-color: hsl(235, 100%, 4%);
+  color: white;
+  max-width: 90%;
+  line-height: 1.25;
+}
+dialog p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+dialog:open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@starting-style {
+  dialog:open {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.btn::before,
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transition: opacity 0.25s ease;
+}
+
+.btn::before {
+  background: var(--c1);
+  opacity: 1;
+}
+
+.btn::after {
+  background: linear-gradient(to right, var(--c1), var(--c2));
+  opacity: 0;
+}
+
+.btn:hover::after {
+  opacity: 1;
+}
+
+h1 {
+  font-family: headfont;
+  background: linear-gradient(to right, #0059ff, #00ff0d);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
