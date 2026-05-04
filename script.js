@@ -28,7 +28,10 @@ if (rules) {
 // }
 
 const { mode, timer, gameType } = settings;
+const inputField = document.querySelector("#countryGuessField");
 let modeFull;
+let question = 1;
+let hintsLeft = 3;
 
 switch (mode) {
   case "guess-country-by-flag":
@@ -54,5 +57,61 @@ console.log(` Settings:
     Timer: ${timer} 
     Game Type: ${gameType} `);
 document.querySelector("title").innerHTML = `Globe Mind | ${gameType} Game`;
-document.querySelector("#modeHeader").textContent = modeFull;
+document.querySelector("#modeHeader").textContent = `${modeFull} - ${gameType}`;
 
+// keyboard related functions
+function pressKey(key) {
+  if (key === " ") key = "space";
+
+  const btn = document.querySelector(
+    `.keyboard button[data-key="${key.toLowerCase()}"]`,
+  );
+
+  if (btn) {
+    btn.classList.add("pressed");
+    setTimeout(() => btn.classList.remove("pressed"), 100);
+  }
+
+  let value = inputField.value.replace("|", "");
+
+  if (key === "backspace") value = value.slice(0, -1);
+  else if (key === "enter") return;
+  else if (key === "space") value += " ";
+  else value += key;
+
+  inputField.value = value + "|";
+}
+
+document.querySelectorAll(".keyboard button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    pressKey(btn.dataset.key);
+    btn.blur();
+  });
+});
+
+document.addEventListener("keydown", (e) => {
+  const key = e.key;
+
+  if ([" ", "Enter", "Backspace"].includes(key)) {
+    e.preventDefault();
+  }
+
+  if (key === "Enter") {
+    pressKey("enter");
+    guessFunc();
+  } else if (key === "Backspace") pressKey("backspace");
+  else if (key === " ") pressKey("space");
+  else if (/^[a-zA-Z]$/.test(key)) pressKey(key.toLowerCase());
+});
+
+function guessFunc() {
+  console.log(`you have guessed!`);
+}
+
+//game functions & logics
+
+document.querySelector("#hintBtn").addEventListener("click", () => {
+  hintsLeft--;
+  if (hintsLeft < 0) return;
+  document.querySelector("#hintsLeftSpan").textContent = hintsLeft;
+});

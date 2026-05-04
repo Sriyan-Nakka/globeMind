@@ -7,6 +7,13 @@
     <title>Globe Mind | Game</title>
     <link rel="stylesheet" href="global.css" />
     <style>
+      @font-face {
+        font-family: "country-font";
+        src: url("fonts/SudoVariable.woff2") format("woff2");
+      }
+      body {
+        margin-bottom: 100px;
+      }
       h1 {
         font-size: 1.6rem;
       }
@@ -25,6 +32,140 @@
       }
       #modeHeader {
         color: green;
+        /* margin-top: 10px; */
+        margin-bottom: 15px;
+        font-size: 1.7rem;
+      }
+      #gameContainer {
+        background-color: hsl(240, 100%, 7%);
+        width: 100%;
+        border-radius: 10px;
+        padding: 10px 0;
+      }
+      #flagImg {
+        width: 200px;
+        border: 2px solid lightseagreen;
+        border-radius: 10px;
+        margin: 5px;
+      }
+      #countryNameHints {
+        font-family: "country-font";
+      }
+      #countryGuessField {
+        pointer-events: none;
+        margin-bottom: 6px;
+        width: 325px;
+        font-size: 1.2rem;
+        background-color: #131313;
+        color: #fff;
+        border-radius: 7px;
+        padding: 5px;
+        border: 2px solid white;
+        font-family: bodyfont, sans-serif;
+      }
+
+      .keyboard {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.25rem, 1vw, 0.5rem);
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        padding: 0 0.4rem;
+      }
+
+      .keyboard .row {
+        display: flex;
+        justify-content: center;
+        gap: clamp(0.2rem, 0.8vw, 0.4rem);
+        width: 100%;
+      }
+
+      .keyboard button {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: clamp(0.6rem, 2vw, 0.9rem) 0;
+        border: none;
+        border-radius: 6px;
+        background: #0d0d3a;
+        color: #ffffff;
+        font-size: clamp(0.75rem, 2.5vw, 1rem);
+        font-family: "headfont", sans-serif;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .keyboard button:active {
+        transform: scale(0.95);
+        background: #1a1a55;
+      }
+      .keyboard button.pressed {
+        transform: scale(0.9);
+        background: #ffffff;
+        color: #0d0d3a;
+        transition:
+          transform 0.08s ease,
+          background 0.08s ease,
+          color 0.08s ease;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .keyboard button:hover {
+          background: #ffffff;
+          color: #0d0d3a;
+        }
+      }
+
+      .keyboard button.wide {
+        flex: 1.3 1 0;
+      }
+
+      .keyboard .backspace {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .keyboard .backspace svg {
+        width: clamp(16px, 4vw, 22px);
+        height: clamp(16px, 4vw, 22px);
+        fill: currentColor;
+      }
+
+      .keyboard button.space {
+        flex: 3;
+        font-size: 0.85rem;
+      }
+
+      #info {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        background-color: rgb(6, 0, 65);
+        margin-bottom: 15px;
+        margin-top: 7px;
+        font-size: 20px;
+      }
+      #info p {
+        margin: 5px 0;
+      }
+      #info button#resetBtn {
+        font-size: 22px;
+        --c1: red;
+        --c2: rgb(255, 50, 50);
+        color: white;
+        border: 2px solid white;
+        margin-top: 10px;
+      }
+      #info button#hintBtn {
+        font-size: 22px;
+        --c1: yellow;
+        --c2: rgb(255, 255, 100);
+        color: black;
+        border: 2px solid white;
+        margin-top: 10px;
       }
     </style>
   </head>
@@ -35,7 +176,99 @@
 
       <h3 id="modeHeader">Mode</h3>
     </header>
-    <main></main>
+    <main>
+      <div id="gameContainer">
+        <img
+          src="https://flagcdn.com/us.svg"
+          alt="Country Flag Image"
+          id="flagImg"
+        />
+        <p id="countryQuestion" style="margin: 0 0 10px 0">India</p>
+        <span style="display: block; font-size: 16px">
+          <span> Answer: </span>
+          <b>
+            <span id="countryNameHints"> _____ </span>
+          </b>
+        </span>
+        <div id="info">
+          <p>
+            Q.No
+            <b>
+              <span id="questionNum">1</span>
+            </b>
+          </p>
+          <p>|</p>
+          <p id="timer" style="font-weight: bold">0:00</p>
+          <p>|</p>
+          <p>
+            <button id="hintBtn" class="btn">
+              Get a Hint (
+              <span id="hintsLeftSpan">3</span>
+              )
+            </button>
+          </p>
+          <p>|</p>
+          <p>
+            <a href="index.html">
+              <button id="resetBtn" class="btn">Exit</button>
+            </a>
+          </p>
+        </div>
+        <input
+          type="text"
+          id="countryGuessField"
+          placeholder="Type your Guess here"
+        />
+        <div class="keyboard">
+          <div class="row">
+            <button data-key="q">Q</button>
+            <button data-key="w">W</button>
+            <button data-key="e">E</button>
+            <button data-key="r">R</button>
+            <button data-key="t">T</button>
+            <button data-key="y">Y</button>
+            <button data-key="u">U</button>
+            <button data-key="i">I</button>
+            <button data-key="o">O</button>
+            <button data-key="p">P</button>
+          </div>
+
+          <div class="row">
+            <button data-key="a">A</button>
+            <button data-key="s">S</button>
+            <button data-key="d">D</button>
+            <button data-key="f">F</button>
+            <button data-key="g">G</button>
+            <button data-key="h">H</button>
+            <button data-key="j">J</button>
+            <button data-key="k">K</button>
+            <button data-key="l">L</button>
+          </div>
+
+          <div class="row">
+            <button class="wide" data-key="enter" style="flex: 3">Guess</button>
+
+            <button data-key="z">Z</button>
+            <button data-key="x">X</button>
+            <button data-key="c">C</button>
+            <button data-key="v">V</button>
+            <button data-key="b">B</button>
+            <button data-key="n">N</button>
+            <button data-key="m">M</button>
+
+            <button class="wide space" data-key="space">Space</button>
+
+            <button class="wide backspace" data-key="backspace">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M22 3H7c-.7 0-1.4.4-1.7 1L1 12l4.3 8c.3.6 1 1 1.7 1h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.6 12.6L16 17l-4-4-4 4-1.4-1.4 4-4-4-4L8 6l4 4 4-4 1.4 1.4-4 4 4 4z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
     <footer>
       <div id="links">
         <a
