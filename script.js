@@ -69,7 +69,7 @@ function pressKey(key) {
 
   if (btn) {
     btn.classList.add("pressed");
-    setTimeout(() => btn.classList.remove("pressed"), 100);
+    setTimeout(() => btn.classList.remove("pressed"), 50);
   }
 
   let value = inputField.value.replace("|", "");
@@ -104,10 +104,6 @@ document.addEventListener("keydown", (e) => {
   else if (/^[a-zA-Z]$/.test(key)) pressKey(key.toLowerCase());
 });
 
-function guessFunc() {
-  console.log(`you have guessed!`);
-}
-
 //game functions & logics
 
 document.querySelector("#hintBtn").addEventListener("click", () => {
@@ -115,3 +111,7 @@ document.querySelector("#hintBtn").addEventListener("click", () => {
   if (hintsLeft < 0) return;
   document.querySelector("#hintsLeftSpan").textContent = hintsLeft;
 });
+
+function guessFunc() {
+  inputField.value = "";
+}
