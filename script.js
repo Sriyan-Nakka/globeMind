@@ -1,9 +1,8 @@
 // script for game.html
 
-//todo: uncomment this line after finishing all logics
-// alert(
-//   "Do not reload the website. Otherwise you will be redirected back to the main page.",
-// );
+alert(
+  "Do not reload the website. Otherwise you will be redirected back to the main page.",
+);
 
 const rules = localStorage.getItem("GM_rules");
 
@@ -12,20 +11,18 @@ let settings = null;
 if (rules) {
   const parsed = JSON.parse(rules);
 
-  // todo: uncomment these lines after finishing all logics
-  // const isExpired = Date.now() - parsed.createdAt > 5 * 1000;
+  const isExpired = Date.now() - parsed.createdAt > 5 * 1000;
 
-  // if (!isExpired) {
-  settings = parsed;
-  // } else {
-  //   localStorage.removeItem("GM_rules");
-  // }
+  if (!isExpired) {
+    settings = parsed;
+  } else {
+    localStorage.removeItem("GM_rules");
+  }
 }
 
-// todo: uncomment these lines after finishing all logics
-// if (!settings) {
-//   window.location.href = "index.html";
-// }
+if (!settings) {
+  window.location.href = "index.html";
+}
 
 const { mode, timer, gameType } = settings;
 
@@ -37,6 +34,7 @@ let modeFull;
 let countryData;
 let question = 1;
 let hintsLeft = 3;
+let gameTimer = new easytimer.Timer();
 
 // =====================
 // INIT MODE SETTINGS
@@ -94,8 +92,7 @@ function setupHintDisplay() {
   let display = "";
 
   for (let char of answer) {
-    if (char === " ")
-      display += " "; // keep spaces
+    if (char === " ") display += " ";
     else display += "-";
   }
 
@@ -160,10 +157,15 @@ function loadQuestion() {
     return;
   }
 
-  // Reset input
+  gameTimer.stop();
+
+  gameTimer.start({
+    countdown: true,
+    startValues: { seconds: timer },
+  });
+
   inputField.value = "|";
 
-  // Update UI
   if (mode.includes("flag")) {
     flagImg.src = data.image;
   }
@@ -176,17 +178,18 @@ function loadQuestion() {
   if (mode === "guess-country-by-iso") {
     countryQuestion.textContent = data.iso;
   }
+
   setupHintDisplay();
 }
 
 // =====================
 // FETCH DATA
 // =====================
-fetch("https://countrylookup-api.netlify.app/api/random/10")
+fetch("https://countrylookup-api.netlify.app/api/random/195")
   .then((res) => res.json())
   .then((data) => {
     countryData = data;
-    loadQuestion(); // 🔥 start game
+    loadQuestion();
   })
   .catch((err) => console.log(err));
 
@@ -249,13 +252,29 @@ function guessFunc() {
   const correct = getCorrectAnswer();
 
   if (guess === correct.toLowerCase()) {
-    console.log("Correct!");
+    document.querySelector("#checkSpan").textContent = "Correct!";
+    document.querySelector("#checkSpan").style.color = "green";
+    setTimeout(() => {
+      document.querySelector("#checkSpan").textContent = "";
+      document.querySelector("#checkSpan").style.color = "white";
+    }, 1000);
 
     question++;
+    if (gameType === "Casual" && question === 11) {
+      alert("🎉 You guessed 10 correctly! You win!");
+      window.location.href = "index.html";
+      return;
+    }
     document.querySelector("#questionNum").textContent = question;
     loadQuestion();
   } else {
     console.log("Wrong!");
+    document.querySelector("#checkSpan").textContent = "Wrong, try again...";
+    document.querySelector("#checkSpan").style.color = "red";
+    setTimeout(() => {
+      document.querySelector("#checkSpan").textContent = "";
+      document.querySelector("#checkSpan").style.color = "white";
+    }, 1000);
   }
 
   inputField.value = "|";
@@ -265,7 +284,6 @@ function guessFunc() {
 // HINT BUTTON
 // =====================
 document.querySelector("#hintBtn").addEventListener("click", () => {
-  // ✅ Add +3 hints every 10 questions (on 11th, 21st, etc.)
   if (question % 10 === 1 && question !== 1) {
     hintsLeft += 3;
   }
@@ -280,7 +298,6 @@ document.querySelector("#hintBtn").addEventListener("click", () => {
 
   let current = hintEl.textContent.split("");
 
-  // 🔍 Find all hidden positions
   let hiddenIndexes = [];
 
   for (let i = 0; i < answer.length; i++) {
@@ -289,16 +306,37 @@ document.querySelector("#hintBtn").addEventListener("click", () => {
     }
   }
 
-  // If nothing left to reveal
   if (hiddenIndexes.length === 0) return;
 
-  // 🎲 Pick random hidden index
   const randomIndex =
     hiddenIndexes[Math.floor(Math.random() * hiddenIndexes.length)];
 
-  // Reveal letter
   current[randomIndex] = answer[randomIndex];
 
-  // Update UI
   hintEl.textContent = current.join("");
+});
+
+// =====================
+// OTHER
+// =====================
+gameTimer.addEventListener("targetAchieved", () => {
+  if (gameType === "Casual") {
+    alert("Time's up! You lost.");
+  } else {
+    alert(`Time's up!\n\nYou guessed ${question - 1} countries correctly! 🎉`);
+  }
+  window.location.href = "index.html";
+});
+
+gameTimer.addEventListener("secondsUpdated", () => {
+  const time = gameTimer.getTimeValues();
+  const el = document.querySelector("#timer");
+
+  el.textContent = `0:${time.seconds.toString().padStart(2, "0")}`;
+
+  if (time.seconds <= 3) {
+    el.style.color = "red";
+  } else {
+    el.style.color = "";
+  }
 });
