@@ -19,17 +19,16 @@
         font-size: 1.6rem;
       }
       footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
         background-color: hsl(235, 100%, 10%);
-        width: 100vw;
+        width: 100%;
         padding: 10px;
         padding-left: 0px;
+        padding-right: 0px;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
         font-size: 1rem;
+        margin-top: 25px;
       }
       #modeHeader {
         color: green;
@@ -206,7 +205,7 @@
       <div id="gameContainer">
         <img src="" alt="Country Flag Image" id="flagImg" />
         <p id="countryQuestion" style="margin: 0 0 10px 0">Loading...</p>
-        <span style="display: block; font-size: 16px">
+        <span style="display: block; font-size: 16px" id="hintsBlockSpan">
           <span> Answer: </span>
           <b>
             <span id="countryNameHints"> </span>
@@ -222,7 +221,7 @@
           <p>|</p>
           <p id="timer" style="font-weight: bold">0:00</p>
           <p>|</p>
-          <p>
+          <p id="hintBtnPara">
             <button id="hintBtn" class="btn">
               Get a Hint (
               <span id="hintsLeftSpan">3</span>
@@ -380,7 +379,7 @@
         </a>
       </div>
       <div id="copyrightName">&copy; Sai Sriyan Nakka, 2026.</div>
-      <div id="versionNum">v1.0</div>
+      <div id="versionNum">v1.1</div>
     </footer>
   </body>
 </html>

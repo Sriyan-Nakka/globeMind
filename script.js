@@ -106,24 +106,28 @@ function questionData(q) {
   return countryData[q - 1];
 }
 
+function normalizeAnswer(text) {
+  return text.toLowerCase().replaceAll("-", " ").replaceAll("'", "");
+}
+
 function getCorrectAnswer() {
   const data = questionData(question);
 
   switch (mode) {
     case "guess-country-by-flag":
-      return data.country.toLowerCase();
+      return normalizeAnswer(data.country);
 
     case "guess-capital-by-flag":
-      return data.capital.toLowerCase();
+      return normalizeAnswer(data.capital);
 
     case "guess-continent-by-country":
-      return data.continent.toLowerCase();
+      return normalizeAnswer(data.continent);
 
     case "guess-iso-by-flag":
-      return data.iso.toLowerCase();
+      return normalizeAnswer(data.iso);
 
     case "guess-country-by-iso":
-      return data.country.toLowerCase();
+      return normalizeAnswer(data.country);
   }
 }
 
@@ -173,6 +177,8 @@ function loadQuestion() {
   if (mode === "guess-continent-by-country") {
     countryQuestion.textContent = data.country;
     flagImg.src = data.image;
+    document.querySelector("#hintBtnPara").style.display = "none";
+    document.querySelector("#hintsBlockSpan").style.display = "none";
   }
 
   if (mode === "guess-country-by-iso") {
@@ -188,6 +194,13 @@ function loadQuestion() {
 fetch("https://countrylookup-api.netlify.app/api/random/195")
   .then((res) => res.json())
   .then((data) => {
+    data[0] = {
+      country: "Guinea-Bissau",
+      capital: "Bissau",
+      continent: "Africa",
+      iso: "GW",
+      image: "https://flagcdn.com/gw.svg",
+    };
     countryData = data;
     loadQuestion();
   })
@@ -211,8 +224,10 @@ function pressKey(key) {
   let value = inputField.value.replace("|", "");
 
   if (key === "backspace") value = value.slice(0, -1);
-  else if (key === "enter") return;
-  else if (key === "space") value += " ";
+  else if (key === "enter") {
+    guessFunc();
+    return;
+  } else if (key === "space") value += " ";
   else value += key;
 
   inputField.value = value + "|";
@@ -234,7 +249,6 @@ document.addEventListener("keydown", (e) => {
 
   if (key === "Enter") {
     pressKey("enter");
-    guessFunc();
   } else if (key === "Backspace") {
     pressKey("backspace");
   } else if (key === " ") {
@@ -248,7 +262,7 @@ document.addEventListener("keydown", (e) => {
 // GUESS LOGIC
 // =====================
 function guessFunc() {
-  let guess = inputField.value.replace("|", "").toLowerCase();
+  let guess = normalizeAnswer(inputField.value.replace("|", ""));
   const correct = getCorrectAnswer();
 
   if (guess === correct.toLowerCase()) {
@@ -265,6 +279,11 @@ function guessFunc() {
       window.location.href = "index.html";
       return;
     }
+    if (question % 10 === 1 && question !== 1) {
+      hintsLeft += 3;
+      document.querySelector("#hintsLeftSpan").textContent = hintsLeft;
+    }
+
     document.querySelector("#questionNum").textContent = question;
     loadQuestion();
   } else {
@@ -284,20 +303,10 @@ function guessFunc() {
 // HINT BUTTON
 // =====================
 document.querySelector("#hintBtn").addEventListener("click", () => {
-  if (question % 10 === 1 && question !== 1) {
-    hintsLeft += 3;
-  }
-
-  if (hintsLeft <= 0) return;
-
-  hintsLeft--;
-  document.querySelector("#hintsLeftSpan").textContent = hintsLeft;
-
   const answer = getAnswerRaw();
   const hintEl = document.querySelector("#countryNameHints");
 
   let current = hintEl.textContent.split("");
-
   let hiddenIndexes = [];
 
   for (let i = 0; i < answer.length; i++) {
@@ -307,6 +316,12 @@ document.querySelector("#hintBtn").addEventListener("click", () => {
   }
 
   if (hiddenIndexes.length === 0) return;
+
+  if (hintsLeft <= 0) return;
+
+  hintsLeft--;
+
+  document.querySelector("#hintsLeftSpan").textContent = hintsLeft;
 
   const randomIndex =
     hiddenIndexes[Math.floor(Math.random() * hiddenIndexes.length)];
@@ -321,9 +336,13 @@ document.querySelector("#hintBtn").addEventListener("click", () => {
 // =====================
 gameTimer.addEventListener("targetAchieved", () => {
   if (gameType === "Casual") {
-    alert("Time's up! You lost.");
+    alert(
+      `Time's up! You lost.\nThe answer was ${getCorrectAnswer().toUpperCase()}`,
+    );
   } else {
-    alert(`Time's up!\n\nYou guessed ${question - 1} countries correctly! 🎉`);
+    alert(
+      `Time's up!\n\nYou guessed ${question - 1} countries correctly! 🎉\n\nThe answer was ${getCorrectAnswer().toUpperCase()}`,
+    );
   }
   window.location.href = "index.html";
 });
