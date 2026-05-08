@@ -1,9 +1,5 @@
 // script for game.html
 
-alert(
-  "Do not reload the website. Otherwise you will be redirected back to the main page.",
-);
-
 const rules = localStorage.getItem("GM_rules");
 
 let settings = null;
@@ -11,9 +7,13 @@ let settings = null;
 if (rules) {
   const parsed = JSON.parse(rules);
 
-  const isExpired = Date.now() - parsed.createdAt > 5 * 1000;
+  const isExpired = Date.now() - parsed.createdAt > 8 * 1000;
 
   if (!isExpired) {
+    alert(
+      "Do not reload the website. Otherwise you will be redirected back to the main page.",
+    );
+
     settings = parsed;
   } else {
     localStorage.removeItem("GM_rules");
@@ -40,6 +40,8 @@ let gameTimer = new easytimer.Timer();
 // INIT MODE SETTINGS
 // =====================
 function init() {
+  const el = document.querySelector("#timer");
+  el.textContent = `0:${timer}`;
   switch (mode) {
     case "guess-country-by-flag":
       modeFull = "Guess the Country by Flag";
@@ -194,13 +196,6 @@ function loadQuestion() {
 fetch("https://countrylookup-api.netlify.app/api/random/195")
   .then((res) => res.json())
   .then((data) => {
-    data[0] = {
-      country: "Guinea-Bissau",
-      capital: "Bissau",
-      continent: "Africa",
-      iso: "GW",
-      image: "https://flagcdn.com/gw.svg",
-    };
     countryData = data;
     loadQuestion();
   })
@@ -264,6 +259,7 @@ document.addEventListener("keydown", (e) => {
 function guessFunc() {
   let guess = normalizeAnswer(inputField.value.replace("|", ""));
   const correct = getCorrectAnswer();
+  const el = document.querySelector("#timer");
 
   if (guess === correct.toLowerCase()) {
     document.querySelector("#checkSpan").textContent = "Correct!";
@@ -274,6 +270,7 @@ function guessFunc() {
     }, 1000);
 
     question++;
+    el.textContent = `0:${timer}`;
     if (gameType === "Casual" && question === 11) {
       alert("🎉 You guessed 10 correctly! You win!");
       window.location.href = "index.html";
@@ -335,6 +332,10 @@ document.querySelector("#hintBtn").addEventListener("click", () => {
 // OTHER
 // =====================
 gameTimer.addEventListener("targetAchieved", () => {
+  const el = document.querySelector("#timer");
+
+  el.textContent = `0:00`;
+
   if (gameType === "Casual") {
     alert(
       `Time's up! You lost.\nThe answer was ${getCorrectAnswer().toUpperCase()}`,
