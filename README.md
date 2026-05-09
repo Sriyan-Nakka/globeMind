@@ -5,6 +5,7 @@ Welcome to Globe Mind, my most modern-looking and most varied game yet! This is 
 You main goal is to guess the answer to a country-related question in the time limit you have selected. If you fail to do so, you lose.
 
 You can answer/guess various questions about countries such as:
+
 - Guess the Country by its flag
 - Guess the Capital of the Country by its flag
 - Guess the Continent of the Country
@@ -15,7 +16,10 @@ You either get to play in short-bursts of 10 flags per match in **Casual** Mode,
 
 **More Detailed How to Play instructions will be given in the website**
 
+- Made using [Easytimer.js](https://github.com/sriyansray/easytimer.js), and [Country Lookup API](https://countrylookup-api.netlify.app)
+
 ### Website Favicon
+
 ![Website Favicon](favicon.png)
 
 <hr>
