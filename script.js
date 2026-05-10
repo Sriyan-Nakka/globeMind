@@ -276,7 +276,7 @@ function guessFunc() {
       window.location.href = "index.html";
       return;
     }
-    if (question % 10 === 1 && question !== 1) {
+    if (question % 3 === 1 && question !== 1) {
       hintsLeft += 3;
       document.querySelector("#hintsLeftSpan").textContent = hintsLeft;
     }
